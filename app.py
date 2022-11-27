@@ -93,8 +93,8 @@ def health():
 app = connexion.FlaskApp(__name__, specification_dir='')
 CORS(app.app)
 app.app.config['CORS_HEADERS'] = 'Content-Type'
+adel = "test"
 app.add_api("openapi.yml", strict_validation=True, validate_responses=True)
-#test
 
 if __name__ == "__main__":
     app.run(port=8110)
