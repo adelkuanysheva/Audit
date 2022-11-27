@@ -1,0 +1,9 @@
+connexion
+swagger-ui-bundle
+requests
+pykafka
+flask-cors
+logger
+datetime
+requests
+uuid

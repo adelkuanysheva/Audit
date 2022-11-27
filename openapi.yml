@@ -1,0 +1,163 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: localhost
+    url: http://localhost:8080
+info:
+  description: This API provides audit info
+  version: "1.0.0"
+  title: Audit API
+  contact:
+    email: akuanysheva@my.bcit.ca
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+
+paths:
+  /ride:
+    get: 
+      summary: gets new ride data readings
+      operationId:  app.ride
+      description: Gets ride data added after a timestamp 
+      parameters: 
+        - name: index
+          in: query
+          description: Gets the ride at the index in the event store
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: Successfully returned a list of ride events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/rideEvent"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Not Found
+          
+  /heartrate:
+    get: 
+      summary: gets new heartrate data readings
+      operationId:  app.heartrate
+      description: Gets heartrate reading from the event store
+      parameters: 
+        - name: index
+          in: query
+          description: Get the heartrate at the index in the event store
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: Successfully returned a list of heartrate events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/hrEvent"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Not Found
+
+  /health:
+    get:
+      summary: health check on the service
+      operationId: app.health
+      description: health check on the service
+      responses:
+        "200":
+          description: service is running
+              
+components:
+  schemas:
+    rideEvent:
+      required:
+        - ride_id
+        - user_id
+        - movie
+        - timestamp
+        - avg_speed #km/h
+        - avg_power #watts/h
+        - distance #km
+      properties:
+        ride_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        user_id:
+          type: string
+          example: "A01258780"
+        movie:
+          type: string
+          example: "John Wick 3"
+        timestamp:
+          type: string
+          format: date-time
+          example: '2016-08-29T09:12:33Z'
+        avg_speed:
+          type: integer
+          example: 20
+        avg_power: 
+          type: integer
+          example: 180
+        distance: 
+          type: integer
+          example: 13
+      type: object
+
+    hrEvent:
+      type: object
+      required:
+        - ride_id # relates to ride data  event
+        - user_id # relates to ride data event
+        - device_id # unique
+        - heart_rate # unique
+        - max_hr # unique (at specific time)
+        - min_hr # unique (at specific time)
+        - timestamp #relates to ride data  event
+      properties:
+        ride_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        user_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        device_id:
+          type: string
+          example: WSD023
+        heart_rate:
+          type: integer
+          example: 65
+        max_hr:
+          type: integer
+          example: 100
+        min_hr:
+          type: integer
+          example: 40
+        timestamp:
+          type: string
+          format: date-time
+          example: '2016-08-29T09:12:33Z'
